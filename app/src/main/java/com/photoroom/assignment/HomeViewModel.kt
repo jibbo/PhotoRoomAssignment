@@ -16,7 +16,7 @@ internal class HomeViewModel(
     private val _uiEvents = MutableSharedFlow<UiEvent>()
     val uiEvents = _uiEvents.asSharedFlow()
 
-     val _uiState = mutableStateListOf<Bitmap>()
+     val uiState = mutableStateListOf<Pair<Bitmap, Bitmap?>>()
 
     private val queue = ArrayDeque<Bitmap>()
 
@@ -40,9 +40,9 @@ internal class HomeViewModel(
             // TODO append first the selected image and then the segmented one
             // so that it will show the loading in the meanwhile
             val original = queue.removeFirst()
-            _uiState.add(original)
+            uiState.add(original to null)
             val segmented = segmentImageUseCase(original)
-            _uiState.add(segmented)
+            uiState[uiState.size - 1] = original to segmented
         }
 
         if (queue.isNotEmpty()) {

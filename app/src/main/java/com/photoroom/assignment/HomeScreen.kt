@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 internal fun HomeScreen(
-    uiState: SnapshotStateList<Bitmap>,
+    uiState: SnapshotStateList<Pair<Bitmap, Bitmap?>>,
     onOpenGalleryClick: () -> Unit
 ) {
     val bitmaps = remember { uiState }
@@ -55,10 +55,9 @@ internal fun HomeScreen(
 
         items(bitmaps.size) {
             Spacer(modifier = Modifier.size(8.dp))
-            Image(
-                bitmap = bitmaps[it].asImageBitmap(),
-                contentDescription = null,
-                modifier = Modifier.size(100.dp)
+            ImageRow(
+                left = bitmaps[it].first,
+                right = bitmaps[it].second
             )
         }
     }
@@ -92,7 +91,7 @@ fun ImageRow(left: Bitmap, right: Bitmap? = null) {
 fun HomeScreenPreview() {
     Theme {
         HomeScreen(
-            uiState = mutableStateListOf<Bitmap>(),
+            uiState = mutableStateListOf<Pair<Bitmap, Bitmap?>>(),
             onOpenGalleryClick = {}
         )
     }

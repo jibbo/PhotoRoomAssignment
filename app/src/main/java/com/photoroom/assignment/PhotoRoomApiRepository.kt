@@ -1,6 +1,7 @@
 package com.photoroom.assignment.data
 
 import android.graphics.Bitmap
+import com.photoroom.assignment.PhotoRoomSegmentationDataSource
 import com.photoroom.assignment.domain.PhotoroomRepository
 
 class PhotoRoomApiRepository constructor(

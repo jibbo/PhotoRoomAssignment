@@ -1,6 +1,7 @@
 package com.photoroom.assignment
 
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -18,11 +19,19 @@ class MainActivity : ComponentActivity() {
     private val viewModel: HomeViewModel = HomeViewModel(ServiceLocator.segmentImageUseCase)
 
     val pickMultipleMedia =
-        registerForActivityResult(PickMultipleVisualMedia(5)) { uris ->
-            // Callback is invoked after the user selects media items or closes the
-            // photo picker.
+        registerForActivityResult(PickMultipleVisualMedia(MAX_PICKABLE_ITEMS)) { uris ->
             if (uris.isNotEmpty()) {
-                Log.d("PhotoPicker", "Number of items selected: ${uris.size}")
+                // TODO verify if this blocks ui
+                uris.forEach {
+                    viewModel.dispatch(
+                        HomeViewModel.Action.ImageSelected(
+                            MediaStore.Images.Media.getBitmap(
+                                this.getContentResolver(),
+                                it
+                            )
+                        )
+                    )
+                }
             } else {
                 Log.d("PhotoPicker", "No media selected")
             }
@@ -33,6 +42,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             Theme {
                 HomeScreen(
+                    uiState = viewModel.uiState,
                     onOpenGalleryClick = {
                         viewModel.dispatch(HomeViewModel.Action.OpenGallery)
                     }
@@ -51,6 +61,10 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    companion object {
+        val MAX_PICKABLE_ITEMS = 100
     }
 
 }

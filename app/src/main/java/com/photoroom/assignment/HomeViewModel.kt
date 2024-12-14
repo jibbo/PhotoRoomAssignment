@@ -20,6 +20,8 @@ internal class HomeViewModel(
 
     private val queue = ArrayDeque<Bitmap>()
 
+    private val started: Boolean = false
+
     fun dispatch(action: Action) {
         when (action) {
             is Action.ImageSelected -> {
@@ -37,8 +39,6 @@ internal class HomeViewModel(
 
     private fun segmentImagesInQueue() {
         viewModelScope.launch {
-            // TODO append first the selected image and then the segmented one
-            // so that it will show the loading in the meanwhile
             val original = queue.removeFirst()
             uiState.add(original to null)
             val segmented = segmentImageUseCase(original)

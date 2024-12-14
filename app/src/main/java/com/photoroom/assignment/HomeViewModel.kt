@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.photoroom.assignment.domain.SegmentImageUseCase
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
@@ -20,7 +21,7 @@ internal class HomeViewModel(
 
     private val queue = ArrayDeque<Bitmap>()
 
-    private val started: Boolean = false
+    private var job: Job? = null
 
     fun dispatch(action: Action) {
         when (action) {
@@ -38,7 +39,11 @@ internal class HomeViewModel(
     }
 
     private fun segmentImagesInQueue() {
-        viewModelScope.launch {
+        if (job?.isActive == true) {
+            return
+        }
+
+        job = viewModelScope.launch {
             val original = queue.removeFirst()
             uiState.add(original to null)
             val segmented = segmentImageUseCase(original)

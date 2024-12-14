@@ -24,7 +24,9 @@ internal class HomeViewModel constructor(
                 segmentImagesInQueue()
             }
             is Action.OpenGallery -> {
-
+                viewModelScope.launch {
+                    _uiEvents.emit(UiEvent.OpenGallery)
+                }
             }
         }
     }

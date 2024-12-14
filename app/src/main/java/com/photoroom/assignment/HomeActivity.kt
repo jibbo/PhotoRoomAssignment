@@ -42,7 +42,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             Theme {
                 HomeScreen(
-                    uiState = viewModel.uiState,
+                    uiState = viewModel._uiState,
                     onOpenGalleryClick = {
                         viewModel.dispatch(HomeViewModel.Action.OpenGallery)
                     }

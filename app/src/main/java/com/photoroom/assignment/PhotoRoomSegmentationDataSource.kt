@@ -13,7 +13,8 @@ class PhotoRoomSegmentationDataSource(
 ) : SegmentationDataSource {
 
     override suspend fun getSegmentedImage(bitmap: Bitmap): Bitmap = withContext(Dispatchers.IO) {
-        val apiKey = ""
+        // TODO save API KEY elsewhere
+        val apiKey = "4e1cf2956b116c4015e5086ebd6b653614f4d1c0"
         if (apiKey.isEmpty()) throw IllegalStateException("Please add the provided API key 🙂")
 
         return@withContext segmentationService.getSegmentedImage(

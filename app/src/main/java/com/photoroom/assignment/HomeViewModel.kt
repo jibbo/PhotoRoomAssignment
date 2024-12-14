@@ -1,6 +1,7 @@
 package com.photoroom.assignment.presentation
 
 import android.graphics.Bitmap
+import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.photoroom.assignment.domain.SegmentImageUseCase
@@ -15,7 +16,7 @@ internal class HomeViewModel(
     private val _uiEvents = MutableSharedFlow<UiEvent>()
     val uiEvents = _uiEvents.asSharedFlow()
 
-    val uiState = UiState()
+     val _uiState = mutableStateListOf<Bitmap>()
 
     private val queue = ArrayDeque<Bitmap>()
 
@@ -36,10 +37,12 @@ internal class HomeViewModel(
 
     private fun segmentImagesInQueue() {
         viewModelScope.launch {
-            val original = queue.removeFirst()
-            val segmented = segmentImageUseCase(original)
             // TODO append first the selected image and then the segmented one
-            uiState.bitmaps.add(Pair(original, segmented))
+            // so that it will show the loading in the meanwhile
+            val original = queue.removeFirst()
+            _uiState.add(original)
+            val segmented = segmentImageUseCase(original)
+            _uiState.add(segmented)
         }
 
         if (queue.isNotEmpty()) {
@@ -55,8 +58,4 @@ internal class HomeViewModel(
     sealed interface UiEvent {
         object OpenGallery : UiEvent
     }
-
-    data class UiState(
-        val bitmaps: MutableList<Pair<Bitmap, Bitmap?>> = mutableListOf()
-    )
 }
